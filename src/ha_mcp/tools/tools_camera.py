@@ -10,7 +10,6 @@ from typing import Any
 
 from fastmcp.utilities.types import Image
 
-from .helpers import log_tool_usage
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +18,6 @@ def register_camera_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     """Register Home Assistant camera tools."""
 
     @mcp.tool(tags={"Camera"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get Camera Image"})
-    @log_tool_usage
     async def ha_get_camera_image(
         entity_id: str,
         width: int | None = None,

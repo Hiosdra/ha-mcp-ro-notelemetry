@@ -24,7 +24,6 @@ from ..errors import ErrorCode, create_error_response
 from .helpers import (
     exception_to_structured_error,
     get_connected_ws_client,
-    log_tool_usage,
     raise_tool_error,
 )
 from .util_helpers import (
@@ -113,7 +112,6 @@ def register_history_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     MAX_HISTORY_LIMIT = 1000
 
     @mcp.tool(tags={"History & Statistics"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get Entity History"})
-    @log_tool_usage
     async def ha_get_history(
         entity_ids: Annotated[
             str | list[str],
@@ -402,7 +400,6 @@ def register_history_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"History & Statistics"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get Statistics"})
-    @log_tool_usage
     async def ha_get_statistics(
         entity_ids: Annotated[
             str | list[str],

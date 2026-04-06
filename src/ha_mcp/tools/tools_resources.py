@@ -16,7 +16,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response, create_resource_not_found_error
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +70,6 @@ def register_resources_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "List Dashboard Resources"
         }
     )
-    @log_tool_usage
     async def ha_config_list_dashboard_resources(
         include_content: Annotated[
             bool,
@@ -190,7 +189,6 @@ def register_resources_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Set Dashboard Resource"
         }
     )
-    @log_tool_usage
     async def ha_config_set_dashboard_resource(
         content: Annotated[
             str | None,
@@ -503,7 +501,6 @@ def register_resources_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Delete Dashboard Resource"
         }
     )
-    @log_tool_usage
     async def ha_config_delete_dashboard_resource(
         resource_id: Annotated[
             str,

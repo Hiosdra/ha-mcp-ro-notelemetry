@@ -12,7 +12,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,6 @@ def register_label_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     """Register Home Assistant label management tools."""
 
     @mcp.tool(tags={"Labels & Categories"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get Label"})
-    @log_tool_usage
     async def ha_config_get_label(
         label_id: Annotated[
             str | None,
@@ -104,7 +103,6 @@ def register_label_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Labels & Categories"}, annotations={"destructiveHint": True, "title": "Create or Update Label"})
-    @log_tool_usage
     async def ha_config_set_label(
         name: Annotated[str, Field(description="Display name for the label")],
         label_id: Annotated[
@@ -204,7 +202,6 @@ def register_label_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Labels & Categories"}, annotations={"destructiveHint": True, "idempotentHint": True, "title": "Remove Label"})
-    @log_tool_usage
     async def ha_config_remove_label(
         label_id: Annotated[
             str,

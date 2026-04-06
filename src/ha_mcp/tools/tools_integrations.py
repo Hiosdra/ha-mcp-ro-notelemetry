@@ -12,7 +12,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import build_pagination_metadata, coerce_bool_param, coerce_int_param
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,6 @@ def register_integration_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get Integration",
         },
     )
-    @log_tool_usage
     async def ha_get_integration(
         entry_id: Annotated[
             str | None,
@@ -311,7 +310,6 @@ def register_integration_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         tags={"Integrations"},
         annotations={"destructiveHint": True, "title": "Set Integration Enabled"},
     )
-    @log_tool_usage
     async def ha_set_integration_enabled(
         entry_id: Annotated[str, Field(description="Config entry ID")],
         enabled: Annotated[
@@ -375,7 +373,6 @@ def register_integration_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         tags={"Integrations"},
         annotations={"destructiveHint": True, "title": "Delete Config Entry"},
     )
-    @log_tool_usage
     async def ha_delete_config_entry(
         entry_id: Annotated[str, Field(description="Config entry ID")],
         confirm: Annotated[

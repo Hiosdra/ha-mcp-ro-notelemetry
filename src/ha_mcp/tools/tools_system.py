@@ -16,7 +16,6 @@ from ..errors import ErrorCode, create_error_response
 from .helpers import (
     exception_to_structured_error,
     get_connected_ws_client,
-    log_tool_usage,
     raise_tool_error,
 )
 from .util_helpers import coerce_bool_param
@@ -50,7 +49,6 @@ def register_system_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     """Register Home Assistant system management tools."""
 
     @mcp.tool(tags={"System"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Check Configuration"})
-    @log_tool_usage
     async def ha_check_config() -> dict[str, Any]:
         """
         Check Home Assistant configuration for errors.
@@ -87,7 +85,6 @@ def register_system_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"System"}, annotations={"destructiveHint": True, "title": "Restart Home Assistant"})
-    @log_tool_usage
     async def ha_restart(
         confirm: bool | str = False,
     ) -> dict[str, Any]:
@@ -192,7 +189,6 @@ def register_system_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             exception_to_structured_error(e)
 
     @mcp.tool(tags={"System"}, annotations={"destructiveHint": True, "title": "Reload Core Components"})
-    @log_tool_usage
     async def ha_reload_core(
         target: str = "all",
     ) -> dict[str, Any]:
@@ -312,7 +308,6 @@ def register_system_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"System", "Zigbee", "Z-Wave"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get System Health (incl. ZHA/Z-Wave diagnostics)"})
-    @log_tool_usage
     async def ha_get_system_health(
         include: str | None = None,
     ) -> dict[str, Any]:

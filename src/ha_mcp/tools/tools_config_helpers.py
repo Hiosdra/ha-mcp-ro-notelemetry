@@ -14,7 +14,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import (
     apply_entity_category,
     coerce_bool_param,
@@ -79,7 +79,6 @@ def register_config_helper_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "List Helpers"
         }
     )
-    @log_tool_usage
     async def ha_config_list_helpers(
         helper_type: Annotated[
             Literal[
@@ -177,7 +176,6 @@ def register_config_helper_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Create or Update Helper"
         }
     )
-    @log_tool_usage
     async def ha_config_set_helper(
         helper_type: Annotated[
             Literal[
@@ -1007,7 +1005,6 @@ def register_config_helper_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Remove Helper"
         }
     )
-    @log_tool_usage
     async def ha_config_remove_helper(
         helper_type: Annotated[
             Literal[

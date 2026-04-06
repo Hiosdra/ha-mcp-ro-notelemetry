@@ -22,7 +22,7 @@ from .best_practice_checker import (
 from .best_practice_checker import (
     get_skill_prefix as _get_skill_prefix,
 )
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import (
     apply_entity_category,
     coerce_bool_param,
@@ -236,7 +236,6 @@ def register_config_automation_tools(mcp: Any, client: Any, **kwargs: Any) -> No
             "title": "Get Automation Config"
         }
     )
-    @log_tool_usage
     async def ha_config_get_automation(
         identifier: Annotated[
             str,
@@ -312,7 +311,6 @@ def register_config_automation_tools(mcp: Any, client: Any, **kwargs: Any) -> No
             "title": "Create or Update Automation"
         }
     )
-    @log_tool_usage
     async def ha_config_set_automation(
         config: Annotated[
             str | dict[str, Any],
@@ -598,7 +596,6 @@ def register_config_automation_tools(mcp: Any, client: Any, **kwargs: Any) -> No
             "title": "Remove Automation"
         }
     )
-    @log_tool_usage
     async def ha_config_remove_automation(
         identifier: Annotated[
             str,

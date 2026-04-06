@@ -31,7 +31,6 @@ from ..errors import (
 from .helpers import (
     exception_to_structured_error,
     get_connected_ws_client,
-    log_tool_usage,
     raise_tool_error,
 )
 
@@ -847,7 +846,6 @@ def register_addon_tools(mcp: Any, client: HomeAssistantClient, **kwargs: Any) -
             "title": "Get Add-ons",
         },
     )
-    @log_tool_usage
     async def ha_get_addon(
         source: Annotated[
             str | None,
@@ -952,7 +950,6 @@ def register_addon_tools(mcp: Any, client: HomeAssistantClient, **kwargs: Any) -
             "title": "Call Add-on API",
         },
     )
-    @log_tool_usage
     async def ha_call_addon_api(
         slug: Annotated[
             str,

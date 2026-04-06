@@ -17,7 +17,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,6 @@ def register_voice_assistant_tools(mcp: Any, client: Any, **kwargs: Any) -> None
             "title": "Get Entity Exposure"
         }
     )
-    @log_tool_usage
     async def ha_get_entity_exposure(
         entity_id: Annotated[
             str | None,

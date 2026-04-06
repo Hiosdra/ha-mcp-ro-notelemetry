@@ -22,7 +22,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import coerce_bool_param, coerce_int_param, unwrap_service_response
 
 logger = logging.getLogger(__name__)
@@ -108,7 +108,6 @@ def register_filesystem_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "List Files"
         }
     )
-    @log_tool_usage
     async def ha_list_files(
         path: Annotated[
             str,
@@ -200,7 +199,6 @@ def register_filesystem_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Read File"
         }
     )
-    @log_tool_usage
     async def ha_read_file(
         path: Annotated[
             str,
@@ -311,7 +309,6 @@ def register_filesystem_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Write File"
         }
     )
-    @log_tool_usage
     async def ha_write_file(
         path: Annotated[
             str,
@@ -440,7 +437,6 @@ def register_filesystem_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Delete File"
         }
     )
-    @log_tool_usage
     async def ha_delete_file(
         path: Annotated[
             str,

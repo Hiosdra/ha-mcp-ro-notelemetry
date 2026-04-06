@@ -17,7 +17,6 @@ from ..errors import ErrorCode, create_error_response
 from .helpers import (
     exception_to_structured_error,
     get_connected_ws_client,
-    log_tool_usage,
     raise_tool_error,
 )
 
@@ -28,7 +27,6 @@ def register_trace_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     """Register Home Assistant trace debugging tools."""
 
     @mcp.tool(tags={"History & Statistics"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get Automation Traces"})
-    @log_tool_usage
     async def ha_get_automation_traces(
         automation_id: Annotated[
             str,
