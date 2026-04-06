@@ -113,6 +113,16 @@ docker run -d --name ha-mcp \
 | **ha-mcp-oauth** | OAuth HTTP server | Claude.ai, multi-user | OAuth consent form |
 | **ha-mcp-sse** | SSE server | Legacy SSE clients | Pre-configured token |
 
+## Optional Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MCP_PORT` | `8086` | Port for the HTTP server |
+| `MCP_SECRET_PATH` | `/mcp` | Secret path for the MCP endpoint |
+| `SSL_CERT_FILE` | — | Path to custom CA bundle for self-signed certificates |
+| `READ_ONLY` | `false` | Restrict to read-only tools (no create/update/delete) |
+| `ENABLE_TOOL_SEARCH` | `false` | Replace full tool catalog with search-based discovery |
+
 ## Requirements
 
 - Docker or Docker Desktop installed

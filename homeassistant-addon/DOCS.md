@@ -225,10 +225,27 @@ Replaces the full tool catalog (~93 tools, ~46K tokens) with search-based discov
 
 Requires add-on restart to take effect.
 
+### read_only
+
+**Default:** `false`
+
+When enabled, only read-only tools are exposed to the AI assistant. All tools that create, update, or delete resources are hidden. This is useful for monitoring-only setups or when connecting untrusted AI clients.
+
+**When to enable:**
+- You want the AI to **only observe** your Home Assistant (states, history, search) without making changes
+- You are connecting an **untrusted or experimental** AI client
+- You need a **monitoring-only** dashboard integration
+
+**When to leave disabled (default):**
+- You want the AI to fully manage your Home Assistant (create automations, control devices, etc.)
+
+Requires add-on restart to take effect.
+
 **Example Configuration:**
 
 ```yaml
 backup_hint: normal
+read_only: false
 secret_path: ""  # Leave empty for auto-generation
 ```
 

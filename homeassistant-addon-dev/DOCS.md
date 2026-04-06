@@ -14,6 +14,7 @@ The dev add-on uses the same configuration as the stable version. See the main a
 |--------|-------------|---------|
 | `backup_hint` | Backup strength preference | `normal` |
 | `secret_path` | Custom secret path (optional) | auto-generated |
+| `read_only` | Restrict to read-only tools (no create/update/delete) | `false` |
 
 ## Updates
 

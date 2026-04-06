@@ -35,3 +35,10 @@ configuration:
       like homeassistant, http, and recorder are blocked. A backup is
       created before every edit. Use for YAML-only features that have no
       UI or API alternative. Requires restart to take effect.
+  read_only:
+    name: Read-only mode
+    description: >-
+      When enabled, only read-only tools are exposed to AI assistants.
+      All tools that create, update, or delete resources are hidden.
+      Useful for monitoring-only setups or untrusted AI clients.
+      Requires restart to take effect.
