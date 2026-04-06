@@ -14,7 +14,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import parse_json_param
 
 logger = logging.getLogger(__name__)
@@ -185,7 +185,6 @@ def register_config_entry_flow_tools(mcp: Any, client: Any, **kwargs: Any) -> No
             "title": "Set Config Entry Helper"
         }
     )
-    @log_tool_usage
     async def ha_set_config_entry_helper(
         helper_type: Annotated[
             SUPPORTED_HELPERS, Field(description="Helper type")
@@ -341,7 +340,6 @@ def register_config_entry_flow_tools(mcp: Any, client: Any, **kwargs: Any) -> No
             "title": "Get Helper Schema"
         }
     )
-    @log_tool_usage
     async def ha_get_helper_schema(
         helper_type: Annotated[SUPPORTED_HELPERS, Field(description="Helper type")],
         menu_option: Annotated[

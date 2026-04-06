@@ -8,32 +8,16 @@ This privacy policy covers only the Home Assistant MCP Server ("ha-mcp") softwar
 
 ## Overview
 
-Ha-mcp runs on your local machine and communicates with your own Home Assistant instance. We are committed to transparency about any data collection.
-
-## Anonymous Usage Statistics
-
-Ha-mcp may collect anonymous usage statistics to help improve the server. If enabled, this includes:
-
-- **Tool usage counts** — which tools are used and how often
-- **Server version** — to understand adoption of updates
-- **Request/response sizes** — to optimize performance (not content)
-
-**What we do NOT collect:**
-- Entity names or IDs
-- Home Assistant configuration
-- Personal information
-- Automation or script content
-- Any data from your smart home devices
-
-Telemetry is configurable in the settings.
+Ha-mcp runs on your local machine and communicates with your own Home Assistant instance. Ha-mcp does not collect, transmit, or share any data with external servers.
 
 ## Bug Reports
 
-Ha-mcp may include a bug reporting feature that allows you to send diagnostic information when you encounter issues. Bug reports are:
+Ha-mcp includes a bug reporting feature that helps you collect diagnostic information when you encounter issues. Bug reports are:
 
-- **Only sent with your explicit approval** — the AI assistant will ask before sending
+- **Only created with your explicit approval** — the AI assistant will ask before generating one
 - **Reviewed with you first** — you'll see what information is included
 - **Anonymized** — personal data should be replaced with generic values before submission
+- **Never sent automatically** — you manually submit the report to GitHub
 
 You are always in control of whether to send a bug report.
 
@@ -49,12 +33,10 @@ When you use ha-mcp, your MCP client accesses data from your Home Assistant inst
 
 - **Your Home Assistant instance** — via the URL and token you provide
 - **Your MCP client** — the application that runs ha-mcp
-- **Our telemetry server** — for anonymous usage statistics (if enabled)
 
 ## Data Security
 
 - Your Home Assistant credentials are stored locally by your MCP client
-- Anonymous telemetry contains no identifying information
 - Bug reports are only sent when you explicitly approve
 
 ## Changes to This Policy
@@ -72,7 +54,7 @@ For privacy-related questions or concerns:
 
 | Aspect | Status |
 |--------|--------|
-| Anonymous telemetry | Configurable |
+| Telemetry | None |
 | Personal data collected | None |
 | Bug reports | User-approved only |
 | Local processing | Yes |

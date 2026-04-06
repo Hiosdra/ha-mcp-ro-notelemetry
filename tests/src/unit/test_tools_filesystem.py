@@ -176,7 +176,6 @@ class TestHaListFilesTool:
 
         # Call the captured function
         if registered_func:
-            # Need to unwrap from log_tool_usage decorator
             inner_func = registered_func.__wrapped__ if hasattr(registered_func, '__wrapped__') else registered_func
             with pytest.raises(ToolError):
                 await inner_func(path="www/")

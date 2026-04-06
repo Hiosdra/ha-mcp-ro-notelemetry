@@ -12,7 +12,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response, create_validation_error
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,6 @@ def register_zone_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     """Register Home Assistant zone configuration tools."""
 
     @mcp.tool(tags={"Zones"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get Zone"})
-    @log_tool_usage
     async def ha_get_zone(
         zone_id: Annotated[
             str | None,
@@ -104,7 +103,6 @@ def register_zone_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Zones"}, annotations={"destructiveHint": True, "title": "Set Zone"})
-    @log_tool_usage
     async def ha_set_zone(
         name: Annotated[
             str | None,
@@ -283,7 +281,6 @@ def register_zone_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"Zones"}, annotations={"destructiveHint": True, "idempotentHint": True, "title": "Remove Zone"})
-    @log_tool_usage
     async def ha_remove_zone(
         zone_id: Annotated[
             str,

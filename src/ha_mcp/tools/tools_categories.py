@@ -15,7 +15,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,6 @@ def register_category_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get Category"
         }
     )
-    @log_tool_usage
     async def ha_config_get_category(
         scope: Annotated[
             str,
@@ -149,7 +148,6 @@ def register_category_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Create or Update Category"
         }
     )
-    @log_tool_usage
     async def ha_config_set_category(
         name: Annotated[str, Field(description="Display name for the category")],
         scope: Annotated[
@@ -253,7 +251,6 @@ def register_category_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Remove Category"
         }
     )
-    @log_tool_usage
     async def ha_config_remove_category(
         scope: Annotated[
             str,

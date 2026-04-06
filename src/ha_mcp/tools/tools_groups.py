@@ -12,7 +12,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import (
     coerce_bool_param,
     wait_for_entity_registered,
@@ -26,7 +26,6 @@ def register_group_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     """Register Home Assistant entity group management tools."""
 
     @mcp.tool(tags={"Groups"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "List Groups"})
-    @log_tool_usage
     async def ha_config_list_groups() -> dict[str, Any]:
         """
         List all Home Assistant entity groups with their member entities.
@@ -88,7 +87,6 @@ def register_group_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Groups"}, annotations={"destructiveHint": True, "title": "Create or Update Group"})
-    @log_tool_usage
     async def ha_config_set_group(
         object_id: Annotated[
             str,
@@ -269,7 +267,6 @@ def register_group_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Groups"}, annotations={"destructiveHint": True, "idempotentHint": True, "title": "Remove Group"})
-    @log_tool_usage
     async def ha_config_remove_group(
         object_id: Annotated[
             str,

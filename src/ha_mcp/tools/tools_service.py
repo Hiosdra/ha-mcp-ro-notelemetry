@@ -15,7 +15,7 @@ from ..client.rest_client import HomeAssistantConnectionError
 from ..errors import (
     create_validation_error,
 )
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import coerce_bool_param, parse_json_param, wait_for_state_change
 
 logger = logging.getLogger(__name__)
@@ -87,7 +87,6 @@ def register_service_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         raise ValueError("device_tools is required for service tools registration")
 
     @mcp.tool(tags={"Service & Device Control"}, annotations={"destructiveHint": True, "title": "Call Service"})
-    @log_tool_usage
     async def ha_call_service(
         domain: str,
         service: str,
@@ -291,7 +290,6 @@ def register_service_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"Service & Device Control"}, annotations={"readOnlyHint": True, "title": "Get Operation Status"})
-    @log_tool_usage
     async def ha_get_operation_status(
         operation_id: Annotated[
             str | list[str],
@@ -350,7 +348,6 @@ def register_service_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"Service & Device Control"}, annotations={"destructiveHint": True, "title": "Bulk Control"})
-    @log_tool_usage
     async def ha_bulk_control(
         operations: str | list[dict[str, Any]], parallel: bool | str = True
     ) -> dict[str, Any]:

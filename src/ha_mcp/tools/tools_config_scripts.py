@@ -18,7 +18,7 @@ from .best_practice_checker import (
 from .best_practice_checker import (
     get_skill_prefix as _get_skill_prefix,
 )
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import (
     apply_entity_category,
     coerce_bool_param,
@@ -65,7 +65,6 @@ def register_config_script_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get Script Config"
         }
     )
-    @log_tool_usage
     async def ha_config_get_script(
         script_id: Annotated[
             str, Field(description="Script identifier (e.g., 'morning_routine')")
@@ -117,7 +116,6 @@ def register_config_script_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Create or Update Script"
         }
     )
-    @log_tool_usage
     async def ha_config_set_script(
         script_id: Annotated[
             str, Field(description="Script identifier (e.g., 'morning_routine')")
@@ -354,7 +352,6 @@ def register_config_script_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Remove Script"
         }
     )
-    @log_tool_usage
     async def ha_config_remove_script(
         script_id: Annotated[
             str, Field(description="Script identifier to delete (e.g., 'old_script')")

@@ -15,7 +15,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,6 @@ def register_calendar_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     """Register calendar management tools with the MCP server."""
 
     @mcp.tool(tags={"Calendar"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get Calendar Events"})
-    @log_tool_usage
     async def ha_config_get_calendar_events(
         entity_id: Annotated[
             str, Field(description="Calendar entity ID (e.g., 'calendar.family')")
@@ -145,7 +144,6 @@ def register_calendar_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             exception_to_structured_error(error, context={"entity_id": entity_id}, suggestions=suggestions)
 
     @mcp.tool(tags={"Calendar"}, annotations={"destructiveHint": True, "title": "Create or Update Calendar Event"})
-    @log_tool_usage
     async def ha_config_set_calendar_event(
         entity_id: Annotated[
             str, Field(description="Calendar entity ID (e.g., 'calendar.family')")
@@ -264,7 +262,6 @@ def register_calendar_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             exception_to_structured_error(error, context={"entity_id": entity_id}, suggestions=suggestions)
 
     @mcp.tool(tags={"Calendar"}, annotations={"destructiveHint": True, "idempotentHint": True, "title": "Remove Calendar Event"})
-    @log_tool_usage
     async def ha_config_remove_calendar_event(
         entity_id: Annotated[
             str, Field(description="Calendar entity ID (e.g., 'calendar.family')")

@@ -21,7 +21,6 @@ from ..errors import ErrorCode, create_error_response
 from .helpers import (
     exception_to_structured_error,
     extract_tool_error_message,
-    log_tool_usage,
     raise_tool_error,
 )
 from .util_helpers import (
@@ -350,7 +349,6 @@ def register_registry_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         tags={"Device Registry"},
         annotations={"destructiveHint": True, "title": "Rename Entity"},
     )
-    @log_tool_usage
     async def ha_rename_entity(
         entity_id: Annotated[
             str,
@@ -583,7 +581,6 @@ def register_registry_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get Device (incl. Zigbee/ZHA/Z2M and Z-Wave)",
         },
     )
-    @log_tool_usage
     async def ha_get_device(
         device_id: Annotated[
             str | None,
@@ -1035,7 +1032,6 @@ def register_registry_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         tags={"Device Registry"},
         annotations={"destructiveHint": True, "title": "Update Device"},
     )
-    @log_tool_usage
     async def ha_update_device(
         device_id: Annotated[
             str,
@@ -1123,7 +1119,6 @@ def register_registry_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Remove Device",
         },
     )
-    @log_tool_usage
     async def ha_remove_device(
         device_id: Annotated[
             str,

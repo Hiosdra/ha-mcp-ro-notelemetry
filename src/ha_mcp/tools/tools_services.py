@@ -12,7 +12,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import build_pagination_metadata, coerce_int_param
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,6 @@ def register_services_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "List Available Services",
         },
     )
-    @log_tool_usage
     async def ha_list_services(
         domain: str | None = None,
         query: str | None = None,

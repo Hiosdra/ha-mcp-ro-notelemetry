@@ -12,7 +12,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,6 @@ def register_blueprint_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         }
 
     @mcp.tool(tags={"Blueprints"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get Blueprint"})
-    @log_tool_usage
     async def ha_get_blueprint(
         path: Annotated[
             str | None,
@@ -184,7 +183,6 @@ def register_blueprint_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"Blueprints"}, annotations={"destructiveHint": True, "title": "Import Blueprint"})
-    @log_tool_usage
     async def ha_import_blueprint(
         url: Annotated[
             str,

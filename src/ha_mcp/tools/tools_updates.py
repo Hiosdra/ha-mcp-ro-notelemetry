@@ -15,7 +15,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import coerce_bool_param
 
 logger = logging.getLogger(__name__)
@@ -395,7 +395,6 @@ def register_update_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         return result
 
     @mcp.tool(tags={"System"}, annotations={"idempotentHint": True, "openWorldHint": True, "readOnlyHint": True, "title": "Get Updates"})
-    @log_tool_usage
     async def ha_get_updates(
         entity_id: Annotated[
             str | None,

@@ -21,7 +21,7 @@ from ..utils.python_sandbox import (
     get_security_documentation,
     safe_execute,
 )
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import parse_json_param
 
 logger = logging.getLogger(__name__)
@@ -267,7 +267,6 @@ def register_config_dashboard_tools(mcp: Any, client: Any, **kwargs: Any) -> Non
             "title": "Get Dashboard"
         }
     )
-    @log_tool_usage
     async def ha_config_get_dashboard(
         url_path: Annotated[
             str | None,
@@ -404,7 +403,6 @@ def register_config_dashboard_tools(mcp: Any, client: Any, **kwargs: Any) -> Non
             "title": "Create or Update Dashboard"
         }
     )
-    @log_tool_usage
     async def ha_config_set_dashboard(
         url_path: Annotated[
             str,
@@ -1010,7 +1008,6 @@ def register_config_dashboard_tools(mcp: Any, client: Any, **kwargs: Any) -> Non
             "title": "Delete Dashboard"
         }
     )
-    @log_tool_usage
     async def ha_config_delete_dashboard(
         dashboard_id: Annotated[
             str,
@@ -1163,7 +1160,6 @@ def register_config_dashboard_tools(mcp: Any, client: Any, **kwargs: Any) -> Non
             "title": "Find Dashboard Card"
         }
     )
-    @log_tool_usage
     async def ha_dashboard_find_card(
         url_path: Annotated[
             str | None,

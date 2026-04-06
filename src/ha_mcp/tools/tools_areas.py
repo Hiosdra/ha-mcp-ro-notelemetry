@@ -12,7 +12,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import parse_string_list_param
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,6 @@ def register_area_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     # ============================================================
 
     @mcp.tool(tags={"Areas & Floors"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "List Areas"})
-    @log_tool_usage
     async def ha_config_list_areas() -> dict[str, Any]:
         """
         List all Home Assistant areas (rooms).
@@ -64,7 +63,6 @@ def register_area_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Areas & Floors"}, annotations={"destructiveHint": True, "title": "Create or Update Area"})
-    @log_tool_usage
     async def ha_config_set_area(
         name: Annotated[
             str | None,
@@ -209,7 +207,6 @@ def register_area_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Areas & Floors"}, annotations={"destructiveHint": True, "idempotentHint": True, "title": "Remove Area"})
-    @log_tool_usage
     async def ha_config_remove_area(
         area_id: Annotated[
             str,
@@ -259,7 +256,6 @@ def register_area_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     # ============================================================
 
     @mcp.tool(tags={"Areas & Floors"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "List Floors"})
-    @log_tool_usage
     async def ha_config_list_floors() -> dict[str, Any]:
         """
         List all Home Assistant floors.
@@ -297,7 +293,6 @@ def register_area_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Areas & Floors"}, annotations={"destructiveHint": True, "title": "Create or Update Floor"})
-    @log_tool_usage
     async def ha_config_set_floor(
         name: Annotated[
             str | None,
@@ -430,7 +425,6 @@ def register_area_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             ])
 
     @mcp.tool(tags={"Areas & Floors"}, annotations={"destructiveHint": True, "idempotentHint": True, "title": "Remove Floor"})
-    @log_tool_usage
     async def ha_config_remove_floor(
         floor_id: Annotated[
             str,

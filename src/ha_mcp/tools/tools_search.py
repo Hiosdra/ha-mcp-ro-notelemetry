@@ -14,7 +14,7 @@ from pydantic import Field
 from ..config import get_global_settings
 from ..errors import create_validation_error
 from ..transforms.categorized_search import DEFAULT_PINNED_TOOLS
-from .helpers import exception_to_structured_error, log_tool_usage
+from .helpers import exception_to_structured_error
 from .util_helpers import (
     add_timezone_metadata,
     build_pagination_metadata,
@@ -155,7 +155,6 @@ def register_search_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Search Entities",
         },
     )
-    @log_tool_usage
     async def ha_search_entities(
         query: str,
         domain_filter: str | None = None,
@@ -509,7 +508,6 @@ def register_search_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get System Overview",
         },
     )
-    @log_tool_usage
     async def ha_get_overview(
         detail_level: Annotated[
             Literal["minimal", "standard", "full"],
@@ -732,7 +730,6 @@ def register_search_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Deep Search",
         },
     )
-    @log_tool_usage
     async def ha_deep_search(
         query: str,
         search_types: Annotated[
@@ -840,7 +837,6 @@ def register_search_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get Entity State",
         },
     )
-    @log_tool_usage
     async def ha_get_state(entity_id: str) -> dict[str, Any]:
         """Get current status, state, and attributes of any entity (lights, switches, sensors, climate, covers, locks, fans, etc.)."""
         try:
@@ -867,7 +863,6 @@ def register_search_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get Multiple Entity States",
         },
     )
-    @log_tool_usage
     async def ha_get_states(
         entity_ids: Annotated[
             list[str],

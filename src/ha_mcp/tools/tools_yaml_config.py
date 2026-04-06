@@ -19,7 +19,7 @@ from pydantic import Field
 
 from ..config import get_global_settings
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .tools_filesystem import (
     MCP_TOOLS_DOMAIN,
     _assert_mcp_tools_available,
@@ -51,7 +51,6 @@ def register_yaml_config_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Set YAML Config",
         },
     )
-    @log_tool_usage
     async def ha_config_set_yaml(
         yaml_path: Annotated[
             str,

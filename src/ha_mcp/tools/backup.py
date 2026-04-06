@@ -18,7 +18,6 @@ from ..errors import ErrorCode, create_error_response
 from .helpers import (
     exception_to_structured_error,
     get_connected_ws_client,
-    log_tool_usage,
     raise_tool_error,
 )
 
@@ -392,7 +391,6 @@ def register_backup_tools(mcp: "FastMCP", client: HomeAssistantClient, **kwargs:
 **Returns:** Backup ID and job status"""
 
     @mcp.tool(description=backup_create_description, tags={"System"}, annotations={"destructiveHint": True, "title": "Create Backup"})
-    @log_tool_usage
     async def ha_backup_create(
         name: Annotated[
             str | None,
@@ -406,7 +404,6 @@ def register_backup_tools(mcp: "FastMCP", client: HomeAssistantClient, **kwargs:
         return await create_backup(client, name)
 
     @mcp.tool(tags={"System"}, annotations={"destructiveHint": True, "title": "Restore Backup"})
-    @log_tool_usage
     async def ha_backup_restore(
         backup_id: Annotated[
             str,

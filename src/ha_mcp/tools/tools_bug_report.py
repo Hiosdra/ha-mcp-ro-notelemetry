@@ -10,19 +10,11 @@ import os
 import platform
 import sys
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Any
 from urllib.parse import quote_plus
-
-from pydantic import Field
 
 from ha_mcp import __version__
 
-from ..utils.usage_logger import (
-    AVG_LOG_ENTRIES_PER_TOOL,
-    get_recent_logs,
-    get_startup_logs,
-)
-from .helpers import log_tool_usage
 
 logger = logging.getLogger(__name__)
 
@@ -92,23 +84,7 @@ def register_bug_report_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Report Issue or Feedback"
         }
     )
-    @log_tool_usage
-    async def ha_report_issue(
-        tool_call_count: Annotated[
-            int,
-            Field(
-                default=10,
-                ge=1,
-                le=16,
-                description=(
-                    "Number of tool calls made since the issue started. "
-                    "This determines how many log entries to include. "
-                    "Count how many ha_* tools were called from when the issue began. "
-                    "Default: 10. Max: 16 (limited by 200-entry log buffer: 16*4*3=192)"
-                ),
-            ),
-        ] = 10,
-    ) -> dict[str, Any]:
+    async def ha_report_issue() -> dict[str, Any]:
         """
         Collect diagnostic information for filing issue reports or feedback.
 
@@ -176,18 +152,6 @@ def register_bug_report_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         except Exception as e:
             logger.warning(f"Failed to get entity count: {e}")
 
-        # Calculate how many log entries to retrieve
-        # Formula: AVG_LOG_ENTRIES_PER_TOOL * 4 * tool_call_count (doubled from 2x to 4x)
-        max_log_entries = AVG_LOG_ENTRIES_PER_TOOL * 4 * tool_call_count
-        recent_logs = get_recent_logs(max_entries=max_log_entries)
-
-        # Get startup logs (first minute of server operation)
-        startup_logs = get_startup_logs()
-
-        # Format logs for inclusion (sanitized summary)
-        log_summary = _format_logs_for_report(recent_logs)
-        startup_log_summary = _format_startup_logs(startup_logs)
-
         # Build the formatted report
         report_lines = [
             "=== ha-mcp Bug Report Info ===",
@@ -207,39 +171,25 @@ def register_bug_report_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         if "time_zone" in diagnostic_info:
             report_lines.append(f"Time Zone: {diagnostic_info['time_zone']}")
 
-        if startup_logs:
-            report_lines.extend([
-                "",
-                f"=== Startup Logs ({len(startup_logs)} entries) ===",
-                startup_log_summary,
-            ])
-
-        if recent_logs:
-            report_lines.extend([
-                "",
-                f"=== Recent Tool Calls ({len(recent_logs)} entries) ===",
-                log_summary,
-            ])
-
         formatted_report = "\n".join(report_lines)
 
         # Generate BOTH templates
         runtime_bug_template = _generate_runtime_bug_template(
-            diagnostic_info, log_summary, startup_log_summary, recent_logs, startup_logs
+            diagnostic_info,
         )
 
         agent_behavior_template = _generate_agent_behavior_template(
-            diagnostic_info, log_summary, recent_logs
+            diagnostic_info,
         )
 
         # Anonymization instructions
         anonymization_guide = _generate_anonymization_guide()
 
         # Generate suggested title
-        suggested_title = _generate_bug_title(diagnostic_info, recent_logs)
+        suggested_title = _generate_bug_title(diagnostic_info)
 
         # Generate search keywords and URLs for duplicate check
-        search_keywords = _generate_search_keywords(diagnostic_info, recent_logs)
+        search_keywords = _generate_search_keywords(diagnostic_info)
         duplicate_check_urls = [
             f"https://github.com/homeassistant-ai/ha-mcp/issues?q=is%3Aissue+{quote_plus(keyword)}"
             for keyword in search_keywords[:3]  # Limit to top 3 keywords
@@ -248,10 +198,6 @@ def register_bug_report_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         return {
             "success": True,
             "diagnostic_info": diagnostic_info,
-            "recent_logs": recent_logs,
-            "startup_logs": startup_logs,
-            "log_count": len(recent_logs),
-            "startup_log_count": len(startup_logs),
             "formatted_report": formatted_report,
             "runtime_bug_template": runtime_bug_template,
             "agent_behavior_template": agent_behavior_template,
@@ -297,100 +243,22 @@ def register_bug_report_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
         }
 
 
-def _format_logs_for_report(logs: list[dict[str, Any]]) -> str:
-    """Format log entries for inclusion in a bug report."""
-    if not logs:
-        return "(No recent logs available)"
-
-    lines = []
-    for log in logs:
-        timestamp = log.get("timestamp", "?")[:19]  # Trim to seconds
-        tool_name = log.get("tool_name", "unknown")
-        success = "OK" if log.get("success") else "FAIL"
-        exec_time = log.get("execution_time_ms", 0)
-        error = log.get("error_message", "")
-
-        line = f"  {timestamp} | {tool_name} | {success} | {exec_time:.0f}ms"
-        if error:
-            # Truncate error to avoid leaking sensitive info
-            error_short = str(error)[:100]
-            line += f" | Error: {error_short}"
-        lines.append(line)
-
-    return "\n".join(lines)
-
-
-def _format_startup_logs(logs: list[dict[str, Any]]) -> str:
-    """Format startup log entries for inclusion in a bug report."""
-    if not logs:
-        return "(No startup logs available)"
-
-    lines = []
-    for log in logs:
-        elapsed = log.get("elapsed_seconds", 0)
-        level = log.get("level", "INFO")
-        logger_name = log.get("logger", "")
-        message = log.get("message", "")
-
-        # Truncate long messages
-        if len(message) > 200:
-            message = message[:200] + "..."
-
-        line = f"  +{elapsed:05.2f}s | {level:5} | {logger_name}: {message}"
-        lines.append(line)
-
-    return "\n".join(lines)
-
-
-def _extract_error_messages(logs: list[dict[str, Any]]) -> list[str]:
-    """
-    Extract error messages from tool call logs.
-
-    Returns a list of error messages with context (tool name, timestamp).
-    """
-    if not logs:
-        return []
-
-    error_messages = []
-    for log in logs:
-        error = log.get("error_message")
-        if error:
-            timestamp = log.get("timestamp", "?")[:19]  # Trim to seconds
-            tool_name = log.get("tool_name", "unknown")
-            # Format: [timestamp] tool_name: error_message
-            error_messages.append(f"[{timestamp}] {tool_name}: {error}")
-
-    return error_messages
-
-
 def _generate_bug_title(
     diagnostic_info: dict[str, Any],
-    recent_logs: list[dict[str, Any]],
 ) -> str:
     """
     Generate a concise bug title (single line, ~60 chars max).
 
     Strategy:
-    1. If there are error messages, use the most recent one as basis
-    2. Otherwise, use generic template based on connection status
-    3. Truncate to ~60 chars max
+    1. Use generic template based on connection status
+    2. Truncate to ~60 chars max
     """
-    title = ""
-    # Try to get the most recent error directly from logs
-    for log in reversed(recent_logs):
-        error_msg = log.get("error_message")
-        if error_msg:
-            tool_name = log.get("tool_name", "unknown")
-            title = f"{tool_name}: {error_msg}"
-            break
-
-    if not title:
-        # No errors - check connection status
-        conn_status = diagnostic_info.get("connection_status", "Unknown")
-        if "Error" in conn_status or "Failed" in conn_status:
-            title = f"Connection issue: {conn_status}"
-        else:
-            title = "Issue with ha-mcp"
+    # Check connection status
+    conn_status = diagnostic_info.get("connection_status", "Unknown")
+    if "Error" in conn_status or "Failed" in conn_status:
+        title = f"Connection issue: {conn_status}"
+    else:
+        title = "Issue with ha-mcp"
 
     # Truncate to ~60 chars, trying to preserve words
     if len(title) > 60:
@@ -401,7 +269,6 @@ def _generate_bug_title(
 
 def _generate_search_keywords(
     diagnostic_info: dict[str, Any],
-    recent_logs: list[dict[str, Any]],
 ) -> list[str]:
     """
     Generate search keywords for duplicate issue detection.
@@ -409,25 +276,6 @@ def _generate_search_keywords(
     Returns a list of keywords to search for similar issues.
     """
     keywords = set()
-
-    # Find the most recent error from logs
-    last_error_log = next((log for log in reversed(recent_logs) if log.get("error_message")), None)
-
-    if last_error_log:
-        tool_name = last_error_log.get("tool_name")
-        if tool_name:
-            keywords.add(tool_name)
-
-        error_msg = last_error_log.get("error_message", "").lower()
-        # Common error patterns
-        if "connection" in error_msg:
-            keywords.add("connection")
-        if "timeout" in error_msg:
-            keywords.add("timeout")
-        if "authentication" in error_msg or "auth" in error_msg:
-            keywords.add("authentication")
-        if "not found" in error_msg:
-            keywords.add("not found")
 
     # Add connection-based keywords
     conn_status = diagnostic_info.get("connection_status", "Unknown")
@@ -443,10 +291,6 @@ def _generate_search_keywords(
 
 def _generate_runtime_bug_template(
     diagnostic_info: dict[str, Any],
-    log_summary: str,
-    startup_log_summary: str,
-    recent_logs: list[dict[str, Any]],
-    startup_logs: list[dict[str, Any]],
 ) -> str:
     """
     Generate a runtime bug report template matching runtime_bug.md format.
@@ -456,32 +300,10 @@ def _generate_runtime_bug_template(
     """
     platform_info = diagnostic_info.get("platform", {})
 
-    # Extract error messages from recent logs
-    error_messages = _extract_error_messages(recent_logs)
-    error_section = "\n".join(error_messages) if error_messages else "<!-- No errors detected in recent logs -->"
-
-    # Show startup logs section only if they exist
-    startup_section = ""
-    if startup_logs:
-        startup_section = f"""
----
-
-## 🚀 Startup Logs (if relevant)
-
-<details>
-<summary>Click to expand startup logs</summary>
-
-```
-{startup_log_summary}
-```
-
-</details>
-"""
-
     return f"""## 🚨 Auto-Generated by `ha_report_issue` Tool
 
 > This template was auto-generated by the ha_report_issue tool.
-> All environment info and logs below were collected automatically.
+> All environment info below was collected automatically.
 
 **Submit this report at:**
 {RUNTIME_BUG_URL}
@@ -524,22 +346,9 @@ def _generate_runtime_bug_template(
 ## 🚨 Error Messages
 
 ```
-{error_section}
+<!-- Paste any error messages here -->
 ```
 
----
-
-## 📊 Recent Tool Calls
-
-<details>
-<summary>Click to expand recent tool calls (auto-filled by ha_report_issue)</summary>
-
-```
-{log_summary}
-```
-
-</details>
-{startup_section}
 ---
 
 ## 💡 Additional Context
@@ -559,20 +368,16 @@ def _generate_runtime_bug_template(
 
 def _generate_agent_behavior_template(
     diagnostic_info: dict[str, Any],
-    log_summary: str,
-    recent_logs: list[dict[str, Any]],
 ) -> str:
     """
     Generate an agent behavior feedback template matching agent_behavior_feedback.md format.
 
     This template focuses on AI agent tool usage patterns and inefficiencies.
     """
-    platform_info = diagnostic_info.get("platform", {})
 
     return f"""## 🤖 Auto-Generated by `ha_report_issue` Tool
 
 > This template was auto-generated by the ha_report_issue tool.
-> Tool call history was collected automatically to help analyze agent behavior.
 
 **Submit this feedback at:**
 {AGENT_BEHAVIOR_URL}
@@ -600,19 +405,6 @@ def _generate_agent_behavior_template(
 <!-- Provide context about what you were trying to do -->
 <!-- Example: "I asked the agent to create an automation that..." -->
 
-
----
-
-## 🔧 Tool Calls Made (Auto-Filled)
-
-<details>
-<summary>Click to expand tool call sequence</summary>
-
-```
-{log_summary}
-```
-
-</details>
 
 ---
 

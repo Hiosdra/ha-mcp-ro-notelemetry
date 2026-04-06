@@ -13,7 +13,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .tools_voice_assistant import KNOWN_ASSISTANTS
 from .util_helpers import coerce_bool_param, parse_json_param, parse_string_list_param
 
@@ -309,7 +309,6 @@ def register_entity_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Set Entity"
         }
     )
-    @log_tool_usage
     async def ha_set_entity(
         entity_id: Annotated[
             str | list[str],
@@ -743,7 +742,6 @@ def register_entity_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get Entity"
         }
     )
-    @log_tool_usage
     async def ha_get_entity(
         entity_id: Annotated[
             str | list[str],
@@ -950,7 +948,6 @@ def register_entity_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Remove Entity",
         },
     )
-    @log_tool_usage
     async def ha_remove_entity(
         entity_id: Annotated[
             str,

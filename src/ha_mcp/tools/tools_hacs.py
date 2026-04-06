@@ -12,7 +12,7 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import add_timezone_metadata, coerce_int_param
 
 logger = logging.getLogger(__name__)
@@ -68,7 +68,6 @@ def register_hacs_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
     """Register HACS integration tools with the MCP server."""
 
     @mcp.tool(tags={"HACS"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get HACS Info"})
-    @log_tool_usage
     async def ha_hacs_info() -> dict[str, Any]:
         """Get HACS status, version, and enabled categories.
 
@@ -130,7 +129,6 @@ def register_hacs_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"HACS"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "List HACS Installed"})
-    @log_tool_usage
     async def ha_hacs_list_installed(
         category: Annotated[
             Literal["integration", "lovelace", "theme", "appdaemon", "python_script"] | None,
@@ -237,7 +235,6 @@ def register_hacs_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"HACS"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Search HACS Store"})
-    @log_tool_usage
     async def ha_hacs_search(
         query: str,
         category: Annotated[
@@ -405,7 +402,6 @@ def register_hacs_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"HACS"}, annotations={"idempotentHint": True, "readOnlyHint": True, "title": "Get HACS Repository Info"})
-    @log_tool_usage
     async def ha_hacs_repository_info(repository_id: str) -> dict[str, Any]:
         """Get detailed repository information including README and documentation.
 
@@ -510,7 +506,6 @@ def register_hacs_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"HACS"}, annotations={"destructiveHint": True, "title": "Add HACS Repository"})
-    @log_tool_usage
     async def ha_hacs_add_repository(
         repository: str,
         category: Annotated[
@@ -624,7 +619,6 @@ def register_hacs_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             )
 
     @mcp.tool(tags={"HACS"}, annotations={"destructiveHint": True, "title": "Download/Install HACS Repository"})
-    @log_tool_usage
     async def ha_hacs_download(
         repository_id: str,
         version: Annotated[

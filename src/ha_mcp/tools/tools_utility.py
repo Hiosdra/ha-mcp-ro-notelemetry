@@ -14,7 +14,7 @@ from fastmcp.exceptions import ToolError
 
 from ..client.rest_client import HomeAssistantAPIError, HomeAssistantConnectionError
 from ..errors import ErrorCode, create_error_response
-from .helpers import exception_to_structured_error, log_tool_usage, raise_tool_error
+from .helpers import exception_to_structured_error, raise_tool_error
 from .util_helpers import add_timezone_metadata, coerce_bool_param, coerce_int_param
 
 logger = logging.getLogger(__name__)
@@ -77,7 +77,6 @@ def register_utility_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Get Logs",
         }
     )
-    @log_tool_usage
     async def ha_get_logs(
         source: Literal["logbook", "system", "error_log", "supervisor"] = "logbook",
         # Shared parameters
@@ -618,7 +617,6 @@ def register_utility_tools(mcp: Any, client: Any, **kwargs: Any) -> None:
             "title": "Evaluate Template"
         }
     )
-    @log_tool_usage
     async def ha_eval_template(
         template: str, timeout: int = 3, report_errors: bool | str = True
     ) -> dict[str, Any]:
