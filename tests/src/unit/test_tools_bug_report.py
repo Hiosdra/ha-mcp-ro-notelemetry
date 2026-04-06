@@ -244,6 +244,7 @@ class TestBugReportTool:
         assert isinstance(title, str)
         assert len(title) > 0
         assert len(title) <= 60
+        assert "Connection" in title
 
     @pytest.mark.asyncio
     async def test_bug_report_duplicate_check_urls(self, ha_report_issue_func, mock_client):
