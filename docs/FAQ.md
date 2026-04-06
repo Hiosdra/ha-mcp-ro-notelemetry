@@ -197,6 +197,7 @@ The version should match the [latest release](https://github.com/homeassistant-a
 | `HOMEASSISTANT_URL` | Your Home Assistant URL | - | Yes |
 | `HOMEASSISTANT_TOKEN` | Long-lived access token (or `demo` for demo env) | - | Yes |
 | `BACKUP_HINT` | Backup recommendation level | `normal` | No |
+| `READ_ONLY` | Restrict to read-only tools (no create/update/delete) | `false` | No |
 
 ### Backup Hint Modes
 

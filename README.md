@@ -182,6 +182,14 @@ All other tools work without the component. These five return an error with inst
 
 These tools also require feature flags: `HAMCP_ENABLE_FILESYSTEM_TOOLS=true` (file tools) and `ENABLE_YAML_CONFIG_EDITING=true` (YAML editing). To enable the `ha_install_mcp_tools` installer tool, set `HAMCP_ENABLE_CUSTOM_COMPONENT_INTEGRATION=true`.
 
+### Read-Only Mode
+
+Set `READ_ONLY=true` to restrict the server to read-only tools only. All tools that create, update, or delete resources are hidden from the AI client. Useful for monitoring-only setups or when connecting untrusted AI clients.
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `READ_ONLY` | `false` | When enabled, only tools annotated as read-only are exposed. All destructive tools are hidden. |
+
 ### Install using HACS (recommended)
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=homeassistant-ai&repository=ha-mcp&category=integration)
