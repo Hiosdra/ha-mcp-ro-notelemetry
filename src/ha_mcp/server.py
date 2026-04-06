@@ -143,6 +143,10 @@ class HomeAssistantSmartMCPServer(EnhancedToolsMixin):
         # ResourcesAsTools are registered so it can wrap everything)
         self._apply_tool_search()
 
+        # Apply read-only filter last (outermost transform) so it
+        # takes precedence over every other transform, including search.
+        self._apply_read_only()
+
     def _get_skills_dir(self) -> Path | None:
         """Return the bundled skills directory if it exists.
 
@@ -467,6 +471,21 @@ class HomeAssistantSmartMCPServer(EnhancedToolsMixin):
             )
         except Exception:
             logger.exception("Failed to apply tool search transform")
+
+    def _apply_read_only(self) -> None:
+        """Apply the ReadOnlyTransform when ``READ_ONLY=true``.
+
+        Adds the transform as the outermost layer so that it filters
+        every tool exposed by the server (including pinned / search
+        proxy tools).
+        """
+        if not self.settings.read_only:
+            return
+
+        from .transforms import ReadOnlyTransform
+
+        self.mcp.add_transform(ReadOnlyTransform())
+        logger.info("Read-only mode enabled — only readOnlyHint tools are exposed")
 
     def _register_skills(self) -> None:
         """Register bundled HA best-practice skills as MCP resources.

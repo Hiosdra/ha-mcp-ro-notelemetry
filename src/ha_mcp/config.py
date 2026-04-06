@@ -112,6 +112,11 @@ class Settings(BaseSettings):
     # files. Disabled by default; only for YAML-only features with no UI/API path.
     enable_yaml_config_editing: bool = Field(False, alias="ENABLE_YAML_CONFIG_EDITING")
 
+    # Read-only mode — when enabled, only tools annotated with
+    # readOnlyHint=True are exposed.  All destructive/write tools are
+    # filtered out, preventing any state-changing operations.
+    read_only: bool = Field(False, alias="READ_ONLY")
+
     @model_validator(mode="after")
     def _skills_dependency(self) -> "Settings":
         """Auto-enable skills (resources) when skills-as-tools is on.
